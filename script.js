@@ -68,7 +68,7 @@ const displayMovements = function(movements){
       const html =`
         <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i+1} deposit</div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__value">${mov}€</div>
         </div>
       `;
       containerMovements.insertAdjacentHTML('afterbegin',html);
@@ -76,3 +76,34 @@ const displayMovements = function(movements){
 }
 
 displayMovements(account1.movements);
+
+const createUserNames = (accs)=>{
+  accs.forEach(acc=>{
+    acc.userName = acc.owner.toLowerCase().split(' ').map(word=>word[0]).join('');
+  })
+}
+createUserNames(accounts);
+
+const calcDisplayBalance =(movement)=>{
+  const balance = movement.reduce((acc,mov)=> acc + mov);
+  labelBalance.textContent = `${balance}€`;
+}
+calcDisplayBalance(account1.movements);
+
+const calcDisplaySummary = (movement)=>{
+  const totalIn = movement.filter(mov=>(mov>0)).reduce((acc,mov)=>acc+mov);
+  labelSumIn.textContent = `${totalIn}€`;
+
+  const totalOut = movement.filter(mov=>(mov<0)).reduce((acc,mov)=>acc+mov);
+  labelSumOut.textContent = `${Math.abs(totalOut)}€`
+
+  const interest = movement.filter(mov=>(mov>0))
+  .map((deposite)=>(deposite*1.2)/100)
+  .filter((int,_,arr)=>{
+    console.log(arr);
+    return int>=1;
+  }).reduce((acc,dep)=>acc+dep);
+  labelSumInterest.textContent = `${interest}`;
+}
+
+calcDisplaySummary(account1.movements);

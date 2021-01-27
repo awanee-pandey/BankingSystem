@@ -62,8 +62,10 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 /* Display the bank movements at run time */
-const displayMovements = function(movements){
-  movements.forEach(function(mov,i){
+const displayMovements = (movements,sort = false)=>{
+  containerMovements.innerHTML = '';
+  const movs = sort ? movements.slice().sort((a,b) => a-b) : movements;
+  movs.forEach(function(mov,i){
       const type = mov>0 ? 'deposit' : 'withdrawal';
       const html =`
         <div class="movements__row">
@@ -119,6 +121,8 @@ const calcDisplaySummary = (account)=>{
   labelSumInterest.textContent = `${interest}`;
 }
 
+/* ------------ Login functionality ------------ */
+
 let currentAccount;
 /* Event Handler */
 btnLogin.addEventListener('click',(e)=>{
@@ -152,9 +156,30 @@ btnTransfer.addEventListener('click',(e)=>{
 
 })
 
+/* Loan Functionality */
+btnLoan.addEventListener('click',(e)=>{
+  e.preventDefault();
+  const amount = +inputLoanAmount.value;
+  if(amount>0 && currentAccount.movements.some(mov=> mov >=amount *0.1)){
+    /* Add the movement */
+    currentAccount.movements.push(amount);
 
-// inputCloseUsername 
-// inputClosePin 
+    /* Update UI */
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value ='';
+
+})
+
+/* Sorting Array */
+let sorted = false;
+btnSort.addEventListener('click',(e)=>{
+  e.preventDefault();
+  displayMovements(currentAccount.movements,!sorted);
+  sorted = !sorted;
+})
+
+/* Close the Account */
 
 btnClose.addEventListener('click',(e)=>{
   e.preventDefault();

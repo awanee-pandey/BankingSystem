@@ -105,12 +105,12 @@ const calcDisplaySummary = (account)=>{
   /* Calculate the total deposits */
   const totalIn = account.movements.filter(mov=>(mov>0))
   .reduce((acc,mov)=>acc+mov);
-  labelSumIn.textContent = `${totalIn}€`;
+  labelSumIn.textContent = `${totalIn.tofixed(2)}€`;
   
   /* Calculate the total withdraw */
   const totalOut = account.movements.filter(mov=>(mov<0))
   .reduce((acc,mov)=>acc+mov,0);
-  labelSumOut.textContent = `${Math.abs(totalOut)}€`
+  labelSumOut.textContent = `${Math.abs(totalOut.tofixed(2))}€`
   
   /* Calculate the total interest */
   const interest = account.movements.filter(mov=>(mov>0))
@@ -118,7 +118,7 @@ const calcDisplaySummary = (account)=>{
   .filter((int,_,arr)=>{
     return int>=1;
   }).reduce((acc,dep)=>acc+dep,0);
-  labelSumInterest.textContent = `${interest}`;
+  labelSumInterest.textContent = `${interest.tofixed(2)}`;
 }
 
 /* ------------ Login functionality ------------ */

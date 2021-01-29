@@ -98,19 +98,19 @@ const updateUI = (account)=>{
 /* Calculate the balance and display in balance label */
 const calcDisplayBalance =(account)=>{
   account.balance = account.movements.reduce((acc,mov)=> acc + mov);
-  labelBalance.textContent = `${account.balance}€`;
+  labelBalance.textContent = `${account.balance.toFixed(2)}€`;
 }
 
 const calcDisplaySummary = (account)=>{
   /* Calculate the total deposits */
   const totalIn = account.movements.filter(mov=>(mov>0))
   .reduce((acc,mov)=>acc+mov);
-  labelSumIn.textContent = `${totalIn.tofixed(2)}€`;
+  labelSumIn.textContent = `${totalIn.toFixed(2)}€`;
   
   /* Calculate the total withdraw */
   const totalOut = account.movements.filter(mov=>(mov<0))
   .reduce((acc,mov)=>acc+mov,0);
-  labelSumOut.textContent = `${Math.abs(totalOut.tofixed(2))}€`
+  labelSumOut.textContent = `${Math.abs(totalOut.toFixed(2))}€`
   
   /* Calculate the total interest */
   const interest = account.movements.filter(mov=>(mov>0))
@@ -118,13 +118,32 @@ const calcDisplaySummary = (account)=>{
   .filter((int,_,arr)=>{
     return int>=1;
   }).reduce((acc,dep)=>acc+dep,0);
-  labelSumInterest.textContent = `${interest.tofixed(2)}`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}`;
 }
 
 /* ------------ Login functionality ------------ */
 
 let currentAccount;
 /* Event Handler */
+
+/* Fake always logged in */
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+const now = new Date();
+// labelDate.textContent = `${date}/${month}`;
+const options = {
+  day: '2-digit',
+  month: '2-digit', // numeric, long, 2-digit
+  year: 'numeric', // numeric, 2-digit
+};
+
+const locale = navigator.language;
+const formattedDate = new Intl.DateTimeFormat(locale, options).format(now);
+labelDate.textContent = formattedDate;
+
+
 btnLogin.addEventListener('click',(e)=>{
   e.preventDefault();
   currentAccount = accounts.find((user)=>user.userName===inputLoginUsername.value)
@@ -153,7 +172,6 @@ btnTransfer.addEventListener('click',(e)=>{
       receiver.movements.push(amount);
       updateUI(currentAccount);
     }
-
 })
 
 /* Loan Functionality */
@@ -168,7 +186,6 @@ btnLoan.addEventListener('click',(e)=>{
     updateUI(currentAccount);
   }
   inputLoanAmount.value ='';
-
 })
 
 /* Sorting Array */
